@@ -20,7 +20,7 @@ MuseVCheckPointDir = os.path.join(
 )
 
 import sys
-sys.path.insert(0,f'{comfy_path}/custom_nodes/ComfyUI-MuseTalk')
+sys.path.insert(0,f'{comfy_path}/custom_nodes/ComfyUI-MuseTalk-f')
 
 from musetalk.utils.utils import get_file_type,get_video_fps,datagen
 from musetalk.utils.preprocessing import get_landmark_and_bbox,read_imgs,coord_placeholder
