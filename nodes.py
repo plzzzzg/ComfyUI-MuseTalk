@@ -134,7 +134,7 @@ class MuseTalkRun:
                 continue
             x1, y1, x2, y2 = bbox
             crop_frame = frame[y1:y2, x1:x2]
-            if crop_frame is None:
+            if crop_frame is None or len(crop_frame) == 0:
                 continue
             crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
             latents = vae.get_latents_for_unet(crop_frame)
