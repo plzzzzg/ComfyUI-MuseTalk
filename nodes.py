@@ -35,7 +35,7 @@ audio_processor,vae,unet,pe  = load_all_model()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 timesteps = torch.tensor([0], device=device)
 
-class MuseTalkCupAudio:
+class MuseTalkCupAudioFlat:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -57,7 +57,7 @@ class MuseTalkCupAudio:
         sound.export(f'{comfy_path}/output/{t}.wav', format="wav")
         return (f'{comfy_path}/output/{t}.wav',)
 
-class MuseTalkRun:
+class MuseTalkRunFlat:
     @classmethod
     def INPUT_TYPES(cls):
         return {
@@ -188,7 +188,7 @@ class MuseTalkRun:
 
         return (torch.cat(tuple(outframes), dim=0),) 
 
-class VHS_FILENAMES_STRING_MuseTalk:
+class VHS_FILENAMES_STRING_MuseTalkFlat:
     @classmethod
     def INPUT_TYPES(s):
         return {
