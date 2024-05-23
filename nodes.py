@@ -205,7 +205,7 @@ class VHS_FILENAMES_STRING_MuseTalkFlat:
         return (filenames[1][-1],)
     
 NODE_CLASS_MAPPINGS = {
-    "MuseTalkRun":MuseTalkRun,
-    "VHS_FILENAMES_STRING_MuseTalk":VHS_FILENAMES_STRING_MuseTalk,
-    "MuseTalkCupAudio":MuseTalkCupAudio,
+    "MuseTalkRunFlat":MuseTalkRunFlat,
+    "VHS_FILENAMES_STRING_MuseTalk_Flat":VHS_FILENAMES_STRING_MuseTalkFlat,
+    "MuseTalkCupAudioFlat":MuseTalkCupAudioFlat,
 }
