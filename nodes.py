@@ -30,10 +30,6 @@ from musetalk.utils.utils import load_all_model
 from pydub import AudioSegment
 import time
 
-# load model weights
-audio_processor,vae,unet,pe  = load_all_model()
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-timesteps = torch.tensor([0], device=device)
 
 class MuseTalkCupAudioFlat:
     @classmethod
@@ -48,7 +44,7 @@ class MuseTalkCupAudioFlat:
 
     RETURN_TYPES = ("STRING",)
     FUNCTION = "run"
-    CATEGORY = "MuseTalk"
+    CATEGORY = "MuseTalkFlat"
 
     def run(self,audio_path,start,end):
         sound = AudioSegment.from_file(audio_path)
@@ -71,9 +67,14 @@ class MuseTalkRunFlat:
 
     RETURN_TYPES = ("IMAGE",)
     FUNCTION = "run"
-    CATEGORY = "MuseTalk"
+    CATEGORY = "MuseTalkFlat"
 
     def run(self, video_path,audio_path,bbox_shift,batch_size):
+        # load model weights
+        audio_processor,vae,unet,pe  = load_all_model()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        timesteps = torch.tensor([0], device=device)
+
         parser = argparse.ArgumentParser()
         parser.add_argument("--bbox_shift",type=int, default=bbox_shift)
         parser.add_argument("--result_dir", default=f'{comfy_path}/output', help="path to output")
@@ -134,9 +135,13 @@ class MuseTalkRunFlat:
                 continue
             x1, y1, x2, y2 = bbox
             crop_frame = frame[y1:y2, x1:x2]
-            if crop_frame is None or len(crop_frame) == 0:
+            try:
+                crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
+            except Exception as e:
+                print("frame resize err", e)
+                print(bbox)
                 continue
-            crop_frame = cv2.resize(crop_frame,(256,256),interpolation = cv2.INTER_LANCZOS4)
+
             latents = vae.get_latents_for_unet(crop_frame)
             input_latent_list.append(latents)
 
@@ -198,7 +203,7 @@ class VHS_FILENAMES_STRING_MuseTalkFlat:
                 }
 
     RETURN_TYPES = ("STRING",)
-    CATEGORY = "MuseTalk"
+    CATEGORY = "MuseTalkFlat"
     FUNCTION = "run"
 
     def run(self, filenames):
