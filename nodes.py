@@ -56,7 +56,6 @@ class MuseTalkCupAudioFlat:
         return (f'{comfy_path}/output/{t}.wav',)
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
 class MuseTalkModelLoader:
@@ -72,6 +71,7 @@ class MuseTalkModelLoader:
     CATEGORY = "MuseTalkFlat"
 
     def load(self):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         start_time = time.time()
         audio_processor, vae, unet, pe = load_all_model()
         landmark_model, landmark_fa = load_model()
@@ -226,6 +226,7 @@ class MuseTalkRunFlat:
             outframes.append(image_tensor_out)
             pbar.update(1)
 
+        torch.cuda.empty_cache()
         return (torch.cat(tuple(outframes), dim=0),)
 
 
