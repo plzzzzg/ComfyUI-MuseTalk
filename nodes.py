@@ -72,8 +72,13 @@ class MuseTalkModelLoader:
     CATEGORY = "MuseTalkFlat"
 
     def load(self):
+        start_time = time.time()
         audio_processor, vae, unet, pe = load_all_model()
         landmark_model, landmark_fa = load_model()
+        end_time = time.time()  # Record the end time
+        cost_ts = (end_time - start_time) * 1000  # Calculate elapsed time in milliseconds
+
+        print(f"museatalk loading models, {cost_ts} ms")
         return audio_processor, vae, unet, pe, landmark_model, landmark_fa
 
 
