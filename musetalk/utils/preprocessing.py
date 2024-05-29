@@ -124,9 +124,10 @@ def get_landmark_and_bbox_frames(frames, upperbondrange=0, model=None, fa=None):
     return coords_list, frames
 
 
-def get_landmark_and_bbox(img_list, upperbondrange=0, model=None, fa=None):
-    if model is None or fa is None:
-        model, fa = load_model()
+def get_landmark_and_bbox(img_list, upperbondrange=0, model: torch.nn.modules.module.Module = None,
+                          fa: FaceAlignment = None):
+    # if model is None or fa is None:
+    #     model, fa = load_model()
     frames = read_imgs(img_list)
     batch_size_fa = 1
     batches = [frames[i:i + batch_size_fa] for i in range(0, len(frames), batch_size_fa)]

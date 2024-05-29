@@ -228,7 +228,7 @@ class MuseTalkRunFlat:
             outframes.append(image_tensor_out)
             pbar.update(1)
 
-        torch.cuda.empty_cache()
+        # torch.cuda.empty_cache()
         return (torch.cat(tuple(outframes), dim=0),)
 
 
