@@ -66,7 +66,7 @@ class MuseTalkModelLoader:
         }
 
     RETURN_TYPES = (
-    "MT_AUDIO_PROCESSOR", "MT_VAE", "MT_UNET", "MT_PE", "MT_LANDMARK_MODEL", "MT_LANDMARK_FA", "MT_FACEPARSING")
+        "MT_AUDIO_PROCESSOR", "MT_VAE", "MT_UNET", "MT_PE", "MT_LANDMARK_MODEL", "MT_LANDMARK_FA", "MT_FACEPARSING")
     FUNCTION = "load"
     CATEGORY = "MuseTalkFlat"
 
@@ -87,8 +87,8 @@ class MuseTalkRunFlat:
     def INPUT_TYPES(cls):
         return {
             "required": {
-                "video_path": ("STRING", {"default": ""}),
-                "audio_path": ("STRING", {"default": ""}),
+                "video_path": ("STRING", {}),
+                "audio_path": ("STRING", {}),
                 "bbox_shift": ("INT", {"default": 0}),
                 "batch_size": ("INT", {"default": 8}),
                 "audio_processor": ("MT_AUDIO_PROCESSOR", {}),
@@ -106,7 +106,7 @@ class MuseTalkRunFlat:
     CATEGORY = "MuseTalkFlat"
 
     def run(self, video_path, audio_path, bbox_shift, batch_size, audio_processor, vae, unet, pe, landmark_model,
-            landmark_fa,faceparsing_model):
+            landmark_fa, faceparsing_model):
         # load model weights
         # audio_processor, vae, unet, pe = load_all_model()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

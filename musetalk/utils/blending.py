@@ -3,15 +3,17 @@ import numpy as np
 import cv2
 from face_parsing import FaceParsing
 
+
 def get_crop_box(box, expand):
     x, y, x1, y1 = box
-    x_c, y_c = (x+x1)//2, (y+y1)//2
-    w, h = x1-x, y1-y
-    s = int(max(w, h)//2*expand)
-    crop_box = [x_c-s, y_c-s, x_c+s, y_c+s]
+    x_c, y_c = (x + x1) // 2, (y + y1) // 2
+    w, h = x1 - x, y1 - y
+    s = int(max(w, h) // 2 * expand)
+    crop_box = [x_c - s, y_c - s, x_c + s, y_c + s]
     return crop_box, s
 
-def face_seg(fp:FaceParsing,image):
+
+def face_seg(fp: FaceParsing, image):
     seg_image = fp(image)
     if seg_image is None:
         print("error, no person_segment")
@@ -20,15 +22,16 @@ def face_seg(fp:FaceParsing,image):
     seg_image = seg_image.resize(image.size)
     return seg_image
 
-def get_image(fp:FaceParsing ,image,face,face_box,upper_boundary_ratio = 0.5,expand=1.2):
-    #print(image.shape)
-    #print(face.shape)
-    
-    body = Image.fromarray(image[:,:,::-1])
-    face = Image.fromarray(face[:,:,::-1])
 
-    x, y, x1, y1 = face_box 
-    #print(x1-x,y1-y)
+def get_image(fp: FaceParsing, image, face, face_box, upper_boundary_ratio=0.5, expand=1.2):
+    # print(image.shape)
+    # print(face.shape)
+
+    body = Image.fromarray(image[:, :, ::-1])
+    face = Image.fromarray(face[:, :, ::-1])
+
+    x, y, x1, y1 = face_box
+    # print(x1-x,y1-y)
     crop_box, s = get_crop_box(face_box, expand)
     x_s, y_s, x_e, y_e = crop_box
     face_position = (x, y)
@@ -36,10 +39,10 @@ def get_image(fp:FaceParsing ,image,face,face_box,upper_boundary_ratio = 0.5,exp
     face_large = body.crop(crop_box)
     ori_shape = face_large.size
 
-    mask_image = face_seg(face_large)
-    mask_small = mask_image.crop((x-x_s, y-y_s, x1-x_s, y1-y_s))
+    mask_image = face_seg(fp, face_large)
+    mask_small = mask_image.crop((x - x_s, y - y_s, x1 - x_s, y1 - y_s))
     mask_image = Image.new('L', ori_shape, 0)
-    mask_image.paste(mask_small, (x-x_s, y-y_s, x1-x_s, y1-y_s))
+    mask_image.paste(mask_small, (x - x_s, y - y_s, x1 - x_s, y1 - y_s))
 
     # keep upper_boundary_ratio of talking area
     width, height = mask_image.size
@@ -51,8 +54,8 @@ def get_image(fp:FaceParsing ,image,face,face_box,upper_boundary_ratio = 0.5,exp
     mask_array = cv2.GaussianBlur(np.array(modified_mask_image), (blur_kernel_size, blur_kernel_size), 0)
     mask_image = Image.fromarray(mask_array)
     mask_image.save("./debug_mask.png")
-    
-    face_large.paste(face, (x-x_s, y-y_s, x1-x_s, y1-y_s))
+
+    face_large.paste(face, (x - x_s, y - y_s, x1 - x_s, y1 - y_s))
     body.paste(face_large, crop_box[:2], mask_image)
     body = np.array(body)
-    return body[:,:,::-1]
+    return body[:, :, ::-1]
