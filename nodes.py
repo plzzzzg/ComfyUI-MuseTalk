@@ -56,9 +56,6 @@ class MuseTalkCupAudioFlat:
         return (f'{comfy_path}/output/{t}.wav',)
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
 class MuseTalkModelLoader:
     @classmethod
     def INPUT_TYPES(cls):
@@ -108,6 +105,7 @@ class MuseTalkRunFlat:
             landmark_fa):
         # load model weights
         # audio_processor, vae, unet, pe = load_all_model()
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         timesteps = torch.tensor([0], device=device)
 
         parser = argparse.ArgumentParser()
