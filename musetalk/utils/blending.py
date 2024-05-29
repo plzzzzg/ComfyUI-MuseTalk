@@ -3,8 +3,6 @@ import numpy as np
 import cv2
 from face_parsing import FaceParsing
 
-fp = FaceParsing()
-
 def get_crop_box(box, expand):
     x, y, x1, y1 = box
     x_c, y_c = (x+x1)//2, (y+y1)//2
@@ -13,7 +11,7 @@ def get_crop_box(box, expand):
     crop_box = [x_c-s, y_c-s, x_c+s, y_c+s]
     return crop_box, s
 
-def face_seg(image):
+def face_seg(fp:FaceParsing,image):
     seg_image = fp(image)
     if seg_image is None:
         print("error, no person_segment")
@@ -22,7 +20,7 @@ def face_seg(image):
     seg_image = seg_image.resize(image.size)
     return seg_image
 
-def get_image(image,face,face_box,upper_boundary_ratio = 0.5,expand=1.2):
+def get_image(fp:FaceParsing ,image,face,face_box,upper_boundary_ratio = 0.5,expand=1.2):
     #print(image.shape)
     #print(face.shape)
     

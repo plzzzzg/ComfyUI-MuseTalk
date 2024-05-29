@@ -28,6 +28,7 @@ from musetalk.utils.utils import get_file_type, get_video_fps, datagen
 from musetalk.utils.preprocessing import get_landmark_and_bbox, read_imgs, coord_placeholder, load_model
 from musetalk.utils.blending import get_image
 from musetalk.utils.utils import load_all_model
+from musetalk.utils.blending import FaceParsing
 
 from pydub import AudioSegment
 import time
@@ -64,7 +65,8 @@ class MuseTalkModelLoader:
             },
         }
 
-    RETURN_TYPES = ("MT_AUDIO_PROCESSOR", "MT_VAE", "MT_UNET", "MT_PE", "MT_LANDMARK_MODEL", "MT_LANDMARK_FA")
+    RETURN_TYPES = (
+    "MT_AUDIO_PROCESSOR", "MT_VAE", "MT_UNET", "MT_PE", "MT_LANDMARK_MODEL", "MT_LANDMARK_FA", "MT_FACEPARSING")
     FUNCTION = "load"
     CATEGORY = "MuseTalkFlat"
 
@@ -74,9 +76,10 @@ class MuseTalkModelLoader:
         landmark_model, landmark_fa = load_model()
         end_time = time.time()  # Record the end time
         cost_ts = (end_time - start_time) * 1000  # Calculate elapsed time in milliseconds
+        fp = FaceParsing()
 
         print(f"museatalk loading models, {cost_ts} ms")
-        return audio_processor, vae, unet, pe, landmark_model, landmark_fa
+        return audio_processor, vae, unet, pe, landmark_model, landmark_fa, fp
 
 
 class MuseTalkRunFlat:
@@ -94,6 +97,7 @@ class MuseTalkRunFlat:
                 "pe": ("MT_PE", {}),
                 "landmark_model": ("MT_LANDMARK_MODEL", {}),
                 "landmark_fa": ("MT_LANDMARK_FA", {}),
+                "faceparsing_model": ("MT_FACEPARSING", {}),
             },
         }
 
@@ -215,7 +219,7 @@ class MuseTalkRunFlat:
                 #                 print(bbox)
                 continue
 
-            combine_frame = get_image(ori_frame, res_frame, bbox)
+            combine_frame = get_image(fp, ori_frame, res_frame, bbox)
             # cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
             image = Image.fromarray(cv2.cvtColor(combine_frame, cv2.COLOR_BGR2RGB))
             # image=Image.fromarray(np.clip(combine_frame, 0, 255).astype(np.uint8))
