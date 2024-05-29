@@ -106,7 +106,7 @@ class MuseTalkRunFlat:
     CATEGORY = "MuseTalkFlat"
 
     def run(self, video_path, audio_path, bbox_shift, batch_size, audio_processor, vae, unet, pe, landmark_model,
-            landmark_fa):
+            landmark_fa,faceparsing_model):
         # load model weights
         # audio_processor, vae, unet, pe = load_all_model()
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -219,7 +219,7 @@ class MuseTalkRunFlat:
                 #                 print(bbox)
                 continue
 
-            combine_frame = get_image(fp, ori_frame, res_frame, bbox)
+            combine_frame = get_image(faceparsing_model, ori_frame, res_frame, bbox)
             # cv2.imwrite(f"{result_img_save_path}/{str(i).zfill(8)}.png",combine_frame)
             image = Image.fromarray(cv2.cvtColor(combine_frame, cv2.COLOR_BGR2RGB))
             # image=Image.fromarray(np.clip(combine_frame, 0, 255).astype(np.uint8))
